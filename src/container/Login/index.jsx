@@ -24,23 +24,32 @@ const Login = () => {
       Toast.show('请输入密码')
       return
     }
-    if (!verify) {
-      Toast.show('请输入验证码')
-      return
-    };
-    if (verify != captcha) {
-      Toast.show('验证码错误')
-      return
-    };
+
     try {
-      const { data } = await post('/api/user/register', {
-        username,
-        password
-      });
-      console.log(data,'data')
-      debugger
-      
-      Toast.show('注册成功');
+      if(type=='login'){
+        const { data } = await post('/api/user/login', {
+          username,
+          password
+        });
+        localStorage.setItem('token', data.token);
+      }else {
+        if (!verify) {
+          Toast.show('请输入验证码')
+          return
+        };
+        if (verify != captcha) {
+          Toast.show('验证码错误')
+          return
+        };
+        const { data,msg,code } = await post('/api/user/register', {
+          username,
+          password
+        });
+        if(msg=='注册成功' && code==200){
+          Toast.show('注册成功');
+          setType('login');
+        }
+      }
     } catch (error) {
       Toast.show('系统错误');
     }
