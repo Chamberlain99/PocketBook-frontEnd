@@ -7,12 +7,15 @@ import { get,REFRESH_STATE, LOAD_STATE } from '../../utils'
 import PopupType from '@/components/PopupType'
 import PopupDate from '@/components/PopupDate'
 import CustomIcon from '@/components/CustomIcon'
+import PopupAddBill from '@/components/PopupAddBill'
 
 
   const Home = () => {
   const typeRef = useRef(); // 账单类型 ref
   const monthRef = useRef(); // 月份筛选 ref
   const [currentSelect, setCurrentSelect] = useState({}); // 当前筛选类型
+  const addRef = useRef(); // 添加账单 ref
+
 
   const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM')); // 当前筛选时间
   const [page, setPage] = useState(1); // 分页
@@ -48,6 +51,7 @@ import CustomIcon from '@/components/CustomIcon'
 
   const addToggle = () => {
     // do something
+    addRef.current && addRef.current.show()
   }
 
 
@@ -136,6 +140,7 @@ import CustomIcon from '@/components/CustomIcon'
     <PopupType ref={typeRef} onSelect={select} />
     <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
     <div className={s.add} onClick={addToggle}><CustomIcon type='tianjia' /></div>
+    <PopupAddBill ref={addRef} />
   </div>
 }
 
