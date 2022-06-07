@@ -26,6 +26,7 @@ import PopupDate from '@/components/PopupDate'
   }, [page,currentSelect, currentTime,typeId])
 
   const getBillList = async ()=>{
+    console.log(typeId,'typeId');
     const { data } = await get(`/api/bill/list?page=${page}&page_size=5&date=${currentTime}&type_id=${typeId}`);
     // 下拉刷新，重制数据
     if (page == 1) {
@@ -70,7 +71,7 @@ import PopupDate from '@/components/PopupDate'
 
    // 筛选类型
    const select = (item) => {
-    setTypeId(item.type || item.id)
+    setTypeId(item.id)
     setRefreshing(REFRESH_STATE.loading);
     setPage(1);
     setCurrentSelect(item)
