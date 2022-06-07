@@ -61,7 +61,9 @@ const Home = () => {
   const [totalPage, setTotalPage] = useState(0); // 分页总数
   const [refreshing, setRefreshing] = useState(REFRESH_STATE.normal); // 下拉刷新状态
   const [loading, setLoading] = useState(LOAD_STATE.normal); // 上拉加载状态
-
+  // 头部汇总信息
+  const [totalExpense, setTotalExpense] = useState(0); // 总支出
+  const [totalIncome, setTotalIncome] = useState(0); // 总收入
   useEffect(() => {
     getBillList() // 初始化
   }, [page])
@@ -74,6 +76,9 @@ const Home = () => {
     } else {
       setList(list.concat(data.list));
     }
+    setTotalExpense(data.totalExpense.toFixed(2));
+    setTotalIncome(data.totalIncome.toFixed(2));
+
     setTotalPage(data.totalPage);
     // 上滑加载状态
     setLoading(LOAD_STATE.success);
@@ -101,8 +106,8 @@ const Home = () => {
   return <div className={s.home}>
     <div className={s.header}>
       <div className={s.dataWrap}>
-        <span className={s.expense}>总支出：<b>¥ 200</b></span>
-        <span className={s.income}>总收入：<b>¥ 500</b></span>
+        <span className={s.expense}>总支出：<b>¥ {totalExpense}</b></span>
+        <span className={s.income}>总收入：<b>¥ {totalIncome}</b></span>
       </div>
       <div className={s.typeWrap}>
         <div className={s.left}>
