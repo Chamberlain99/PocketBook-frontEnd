@@ -24,14 +24,16 @@ const Login = () => {
       Toast.show('请输入密码')
       return
     }
-
     try {
       if(type=='login'){
-        const { data } = await post('/api/user/login', {
+        const { data,code } = await post('/api/user/login', {
           username,
           password
         });
-        localStorage.setItem('token', data.token);
+        if(code==200){
+          Toast.show('登录成功')
+          localStorage.setItem('token', data.token);
+        }
       }else {
         if (!verify) {
           Toast.show('请输入验证码')
