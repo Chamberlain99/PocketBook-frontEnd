@@ -4,7 +4,8 @@ import { Icon ,Pull } from 'zarm'
 import dayjs from 'dayjs'
 import s from './style.module.less'
 import { get,REFRESH_STATE, LOAD_STATE } from '../../utils'
-
+import PopupType from '@/components/PopupType'
+import PopupDate from '@/components/PopupDate'
 const Home = () => {
   // const [list, setList] = useState([
   //   {
@@ -54,6 +55,9 @@ const Home = () => {
   //     date: '2021-06-11'
   //   },
   // ]); // 账单列表
+  const typeRef = useRef(); // 账单类型 ref
+  const monthRef = useRef(); // 月份筛选 ref
+
 
   const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM')); // 当前筛选时间
   const [page, setPage] = useState(1); // 分页
@@ -102,6 +106,30 @@ const Home = () => {
     }
   }
 
+  // 添加账单弹窗
+  const toggle = () => {
+    typeRef.current && typeRef.current.show()
+  };
+  // 选择月份弹窗
+  const monthToggle = () => {
+    monthRef.current && monthRef.current.show()
+  };
+
+   // 筛选类型
+   const select = (item) => {
+    setRefreshing(REFRESH_STATE.loading);
+    setPage(1);
+    setCurrentSelect(item)
+  }
+  // 筛选月份
+  const selectMonth = (item) => {
+    setRefreshing(REFRESH_STATE.loading);
+    setPage(1);
+    setCurrentTime(item)
+  }
+
+
+
 
   return <div className={s.home}>
     <div className={s.header}>
@@ -114,7 +142,7 @@ const Home = () => {
           <span className={s.title}>类型 <Icon className={s.arrow} type="arrow-bottom" /></span>
         </div>
         <div className={s.right}>
-          <span className={s.time}>2022-06<Icon className={s.arrow} type="arrow-bottom" /></span>
+          <span className={s.time} onClick={monthToggle}>{ currentTime }<Icon className={s.arrow} type="arrow-bottom" /></span>
         </div>
       </div>
     </div>
@@ -142,6 +170,8 @@ const Home = () => {
         </Pull> : null
       }
     </div>
+    <PopupType ref={typeRef} onSelect={select} />
+    <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
   </div>
 }
 
