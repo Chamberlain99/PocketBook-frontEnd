@@ -6,6 +6,9 @@ import s from './style.module.less'
 import { get,REFRESH_STATE, LOAD_STATE } from '../../utils'
 import PopupType from '@/components/PopupType'
 import PopupDate from '@/components/PopupDate'
+import CustomIcon from '@/components/CustomIcon'
+
+
   const Home = () => {
   const typeRef = useRef(); // 账单类型 ref
   const monthRef = useRef(); // 月份筛选 ref
@@ -42,6 +45,11 @@ import PopupDate from '@/components/PopupDate'
     setLoading(LOAD_STATE.success);
     setRefreshing(REFRESH_STATE.success);
   }
+
+  const addToggle = () => {
+    // do something
+  }
+
 
   // 请求列表数据
   const refreshData = () => {
@@ -127,6 +135,7 @@ import PopupDate from '@/components/PopupDate'
     </div>
     <PopupType ref={typeRef} onSelect={select} />
     <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
+    <div className={s.add} onClick={addToggle}><CustomIcon type='tianjia' /></div>
   </div>
 }
 
