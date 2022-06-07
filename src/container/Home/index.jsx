@@ -6,61 +6,14 @@ import s from './style.module.less'
 import { get,REFRESH_STATE, LOAD_STATE } from '../../utils'
 import PopupType from '@/components/PopupType'
 import PopupDate from '@/components/PopupDate'
-const Home = () => {
-  // const [list, setList] = useState([
-  //   {
-  //     bills: [
-  //       {
-  //         amount: "500.00",
-  //         date: "1623390740000",
-  //         id: 55,
-  //         pay_type: 2,
-  //         remark: "",
-  //         type_id: 12,
-  //         type_name: "工资"
-  //       },
-  //     ],
-  //     date: '2021-6-24'
-  //   },
-  //   {
-  //     bills: [
-  //       {
-  //         amount: "25.00",
-  //         date: "1623390740000",
-  //         id: 911,
-  //         pay_type: 1,
-  //         remark: "",
-  //         type_id: 1,
-  //         type_name: "餐饮"
-  //       },
-  //       {
-  //         amount: "50.00",
-  //         date: "1623390740000",
-  //         id: 78,
-  //         pay_type: 1,
-  //         remark: "",
-  //         type_id: 2,
-  //         type_name: "服饰"
-  //       },
-  //       {
-  //         amount: "9100.00",
-  //         date: "1623390740000",
-  //         id: 79,
-  //         pay_type: 2,
-  //         remark: "",
-  //         type_id: 14,
-  //         type_name: "工资"
-  //       },
-  //     ],
-  //     date: '2021-06-11'
-  //   },
-  // ]); // 账单列表
+  const Home = () => {
   const typeRef = useRef(); // 账单类型 ref
   const monthRef = useRef(); // 月份筛选 ref
-
+  const [currentSelect, setCurrentSelect] = useState({}); // 当前筛选类型
 
   const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM')); // 当前筛选时间
   const [page, setPage] = useState(1); // 分页
+  const [typeId, setTypeId] = useState('all'); 
   const [list, setList] = useState([]); // 账单列表
   const [totalPage, setTotalPage] = useState(0); // 分页总数
   const [refreshing, setRefreshing] = useState(REFRESH_STATE.normal); // 下拉刷新状态
@@ -70,10 +23,10 @@ const Home = () => {
   const [totalIncome, setTotalIncome] = useState(0); // 总收入
   useEffect(() => {
     getBillList() // 初始化
-  }, [page])
+  }, [page,currentSelect, currentTime,typeId])
 
   const getBillList = async ()=>{
-    const { data } = await get(`/api/bill/list?page=${page}&page_size=5&date=${currentTime}`);
+    const { data } = await get(`/api/bill/list?page=${page}&page_size=5&date=${currentTime}&type_id=${typeId}`);
     // 下拉刷新，重制数据
     if (page == 1) {
       setList(data.list);
@@ -117,6 +70,7 @@ const Home = () => {
 
    // 筛选类型
    const select = (item) => {
+    setTypeId(item.type || item.id)
     setRefreshing(REFRESH_STATE.loading);
     setPage(1);
     setCurrentSelect(item)
@@ -138,8 +92,8 @@ const Home = () => {
         <span className={s.income}>总收入：<b>¥ {totalIncome}</b></span>
       </div>
       <div className={s.typeWrap}>
-        <div className={s.left}>
-          <span className={s.title}>类型 <Icon className={s.arrow} type="arrow-bottom" /></span>
+        <div className={s.left} onClick={toggle}>
+          <span className={s.title} >{ currentSelect.name || '全部类型' } <Icon className={s.arrow} type="arrow-bottom" /></span>
         </div>
         <div className={s.right}>
           <span className={s.time} onClick={monthToggle}>{ currentTime }<Icon className={s.arrow} type="arrow-bottom" /></span>
