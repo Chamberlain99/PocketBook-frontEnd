@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import PopupDate from '../PopupDate'
 import cx from 'classnames';
-import { get, typeMap } from '@/utils';
+import { get, typeMap,post } from '@/utils';
 import CustomIcon from '../CustomIcon';
 
 import s from './style.module.less';
 
-const PopupAddBill = forwardRef((props, ref) => {
+const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
 
   const dateRef = useRef();
   const [date, setDate] = useState(new Date()); // 日期
@@ -21,6 +21,9 @@ const PopupAddBill = forwardRef((props, ref) => {
   const [currentType, setCurrentType] = useState({}); // 当前选中账单类型
   const [expense, setExpense] = useState([]); // 支出类型数组
   const [income, setIncome] = useState([]); // 收入类型数组
+
+  const [remark, setRemark] = useState(''); // 备注
+  const [showRemark, setShowRemark] = useState(false); // 备注输入框展示控制
 
 
   useEffect(async () => {
@@ -57,6 +60,7 @@ const PopupAddBill = forwardRef((props, ref) => {
     // 点击确认按钮时
     if (value == 'ok') {
       // 这里后续将处理添加账单逻辑
+      addBill()
       return
     }
 
@@ -67,15 +71,45 @@ const PopupAddBill = forwardRef((props, ref) => {
     // amount += value
     setAmount(amount + value)
   }
+
+  // 添加账单
+const addBill = async () => {
+  if (!amount) {
+    Toast.show('请输入具体金额')
+    return
+  }
+
+  const params = {
+      amount: Number(amount).toFixed(2), // 账单金额小数点后保留两位
+      type_id: currentType.id, // 账单种类id
+      type_name: currentType.name, // 账单种类名称
+      date: dayjs(date).unix() * 1000, // 日期传时间戳
+      pay_type: payType == 'expense' ? 1 : 2, // 账单类型传 1 或 2
+      remark: remark || '' // 备注
+    }
+    const result = await post('/api/bill/add', params);
+    // 重制数据
+    setAmount('');
+    setPayType('expense');
+    setCurrentType(expense[0]);
+    setDate(new Date());
+    setRemark('');
+    Toast.show('添加成功');
+    setShow(false);
+    if (onReload) onReload();
+  }
+
+
+
     // 切换收入还是支出
     const changeType = (type) => {
         setPayType(type);
       };
     
-  // 日期选择回调
-  const selectDate = (val) => {
-    setDate(val);
-  }
+    // 日期选择回调
+    const selectDate = (val) => {
+      setDate(val);
+    }
   return <Popup
     visible={show}
     direction="bottom"
@@ -119,11 +153,32 @@ const PopupAddBill = forwardRef((props, ref) => {
         </div>
       </div>
 
+      <div className={s.remark}>
+        {
+          showRemark ? <Input
+            autoHeight
+            showLength
+            maxLength={50}
+            type="text"
+            rows={3}
+            value={remark}
+            placeholder="请输入备注信息"
+            onChange={(val) => setRemark(val)}
+            onBlur={() => setShowRemark(false)}
+          /> : <span onClick={() => setShowRemark(true)}>{remark || '添加备注'}</span>
+        }
+      </div>
+
 
        <Keyboard type="price" onKeyClick={(value) => handleMoney(value)} />
       <PopupDate ref={dateRef} onSelect={selectDate} />
     </div>
   </Popup>
 })
+
+PopupAddBill.propTypes = {
+  detail: PropTypes.object,
+  onReload: PropTypes.func
+}
 
 export default PopupAddBill

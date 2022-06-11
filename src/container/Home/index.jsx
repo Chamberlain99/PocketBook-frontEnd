@@ -140,7 +140,7 @@ import PopupAddBill from '@/components/PopupAddBill'
     <PopupType ref={typeRef} onSelect={select} />
     <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
     <div className={s.add} onClick={addToggle}><CustomIcon type='tianjia' /></div>
-    <PopupAddBill ref={addRef} />
+    <PopupAddBill ref={addRef} onReload={refreshData} />
   </div>
 }
 
