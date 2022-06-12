@@ -40,8 +40,8 @@ import PopupAddBill from '@/components/PopupAddBill'
     } else {
       setList(list.concat(data.list));
     }
-    setTotalExpense(data.totalExpense.toFixed(2));
-    setTotalIncome(data.totalIncome.toFixed(2));
+    setTotalExpense(data.totalExpense.toFixed(1));
+    setTotalIncome(data.totalIncome.toFixed(1));
 
     setTotalPage(data.totalPage);
     // 上滑加载状态

@@ -8,6 +8,7 @@ import s from './style.module.less';
 const User = () => {
   const history = useHistory();
   const [user, setUser] = useState({});
+  const [avatar, setAvatar] = useState(''); // 头像
   
   useEffect(() => {
     getUserInfo();

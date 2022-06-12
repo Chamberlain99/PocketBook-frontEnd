@@ -22,12 +22,13 @@ const Account = (props) => {
           Toast.show('新密码输入不一致');
           return
         }
-        await post('/api/user/modify_pass', {
+        await post('/api/user/modify_password', {
           old_pass: value.oldpass,
           new_pass: value.newpass,
           new_pass2: value.newpass2
         })
         Toast.show('修改成功')
+        window.location.href = 'user'
       }
     });
   }
