@@ -33,6 +33,7 @@ const Login = () => {
         if(code==200){
           Toast.show('登录成功')
           localStorage.setItem('token', data.token);
+          window.location.href = '/'
         }
       }else {
         if (!verify) {
